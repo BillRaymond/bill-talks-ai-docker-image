@@ -16,7 +16,7 @@ RUN echo "#################################################"
 RUN echo "Get the latest APT packages"
 RUN echo "apt-get update"
 RUN apt update && \
-    apt-get -y upgrade
+    apt-get -y update
 
 RUN echo "#################################################"
 RUN echo "Install and configure Git"
@@ -32,8 +32,8 @@ RUN echo "#################################################"
 RUN echo "Install Jekyll pre-requisites"
 RUN echo "Partially based on https://gist.github.com/jhonnymoreira/777555ea809fd2f7c2ddf71540090526"
 RUN echo "apt-get -y install git curl autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev apt-utils jq"
-RUN apt-get -y install \
-    git \
+RUN apt-get -y install --no-install-recommends \
+    wget \
     curl \
     autoconf \
     bison \
@@ -48,32 +48,10 @@ RUN apt-get -y install \
     libgdbm-dev \
     libdb-dev \
     apt-utils \
-    jq
-
-RUN echo "#################################################"
-RUN echo "Install rbenv to manage Ruby versions"
-RUN echo "ENV RBENV_ROOT /usr/local/src/rbenv"
-ENV RBENV_ROOT /usr/local/src/rbenv
-RUN echo "ENV RUBY_VERSION 3.1.2"
-ENV RUBY_VERSION 3.1.2
-RUN echo "ENV PATH ${RBENV_ROOT}/bin:${RBENV_ROOT}/shims:$PATH"
-ENV PATH ${RBENV_ROOT}/bin:${RBENV_ROOT}/shims:$PATH
-
-RUN git clone https://github.com/rbenv/rbenv.git ${RBENV_ROOT} \
-  && git clone https://github.com/rbenv/ruby-build.git \
-    ${RBENV_ROOT}/plugins/ruby-build \
-  && ${RBENV_ROOT}/plugins/ruby-build/install.sh \
-  && echo 'eval "$(rbenv init -)"' >> /etc/profile.d/rbenv.sh
-
-RUN echo "#################################################"
-RUN echo "Install ruby and set the global version"
-RUN rbenv install ${RUBY_VERSION} \
-  && rbenv global ${RUBY_VERSION}
-
-RUN echo "#################################################"
-RUN echo "Install Jekyll and bundler"
-RUN echo "gem install jekyll bundler"
-RUN gem install jekyll bundler --no-document
+    jq \
+    ca-certificates \
+    tar \
+    xz-utils
 
 RUN echo "#################################################"
 RUN echo "Install Python for any scripting needs PYVER 3.xx will insall 3.xx.1, 3.xx.2, etc"
@@ -113,3 +91,23 @@ RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     npm cache clean --force && \
     find / -type d -name __pycache__ -prune -exec rm -rf {} \;
+
+RUN echo "#################################################"
+RUN echo "Prepare to install Go (Golang)"
+ENV GO_VERSION 1.22.1
+ENV GOROOT /usr/local/go
+ENV GOPATH /go
+ENV PATH $GOPATH/bin:$GOROOT/bin:$PATH
+
+RUN echo "#################################################"
+RUN echo "Install Go (Golang)"
+RUN wget https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz -O go.tar.gz && \
+    tar -xzf go.tar.gz && \
+    mv go /usr/local
+
+RUN echo "#################################################"
+RUN echo "Download and install Dart Sass"
+ENV DART_SASS_VERSION 1.54.5
+RUN wget https://github.com/sass/dart-sass/releases/download/${DART_SASS_VERSION}/dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz -O dart-sass.tar.gz && \
+    tar -xzf dart-sass.tar.gz -C /usr/local && \
+    ln -s /usr/local/dart-sass/sass /usr/local/bin/sass
