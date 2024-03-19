@@ -93,14 +93,12 @@ RUN apt-get clean && \
     find / -type d -name __pycache__ -prune -exec rm -rf {} \;
 
 RUN echo "#################################################"
-RUN echo "Prepare to install Go (Golang)"
+RUN echo "Install Go (Golang)"
 ENV GO_VERSION 1.22.1
 ENV GOROOT /usr/local/go
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:$GOROOT/bin:$PATH
 
-RUN echo "#################################################"
-RUN echo "Install Go (Golang)"
 RUN wget https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz -O go.tar.gz && \
     tar -xzf go.tar.gz && \
     mv go /usr/local
@@ -111,3 +109,10 @@ ENV DART_SASS_VERSION 1.54.5
 RUN wget https://github.com/sass/dart-sass/releases/download/${DART_SASS_VERSION}/dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz -O dart-sass.tar.gz && \
     tar -xzf dart-sass.tar.gz -C /usr/local && \
     ln -s /usr/local/dart-sass/sass /usr/local/bin/sass
+
+RUN echo "#################################################"
+RUN echo "Download and install Hugo Extended"
+ENV HUGO_VERSION 0.124.0
+RUN wget https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_Linux-ARM64.tar.gz -O hugo.tar.gz && \
+    tar -xzf hugo.tar.gz -C /usr/local/bin && \
+    rm -rf hugo.tar.gz

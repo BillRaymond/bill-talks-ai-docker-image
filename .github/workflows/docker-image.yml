@@ -1,11 +1,14 @@
-name: Docker Image CI
-
 # When there are new commits, update the image on Docker
+name: Docker Image CI
 
 on:
   push:
     branches: [ "main" ]
   workflow_dispatch: # you can trigger the workflow manually
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true # this workflow stops other concurrent workflows from running
 
 jobs:
 

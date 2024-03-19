@@ -24,7 +24,8 @@
 			"extensions": [
 				"ms-azuretools.vscode-docker",
 				"golang.Go",
-				"budparr.language-hugo-vscode"
+				"budparr.language-hugo-vscode",
+				"github.vscode-github-actions"
 			]
 		}
 	}
