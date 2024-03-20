@@ -73,7 +73,7 @@ RUN echo "#################################################"
 RUN echo "Install Node.js and npm from NodeSource for faster web development"
 RUN curl -sL https://deb.nodesource.com/setup_lts.x | bash - && \
           apt-get install -y nodejs \
-          && npm install -g npm@latest \
+          && npm install -g npm@10.5.0 \
           sass
 
 RUN echo "#################################################"
