@@ -2,7 +2,8 @@ FROM ubuntu:22.04
 
 RUN echo "#################################################"
 RUN echo "Ubuntu image that installs dependencies for BillTalksAI.com"
-RUN echo "Git, RBENV, Ruby, Jekyll, Python & dependencies for scripting"
+RUN echo "Git, Go, Hugo, NPM, Python, and dependencies."
+RUN echo "Python is for scripting"
 
 RUN echo "#################################################"
 RUN echo "Set the timezone and suppress manual inputs"
@@ -29,24 +30,14 @@ RUN git config --global user.name "$GITUN" &&\
     git config --global init.defaultBranch main
 
 RUN echo "#################################################"
-RUN echo "Install Jekyll pre-requisites"
-RUN echo "Partially based on https://gist.github.com/jhonnymoreira/777555ea809fd2f7c2ddf71540090526"
-RUN echo "apt-get -y install git curl autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev apt-utils jq"
+RUN echo "Install pre-requisites"
 RUN apt-get -y install --no-install-recommends \
     wget \
     curl \
-    autoconf \
-    bison \
     build-essential \
     libssl-dev \
     libyaml-dev \
-    libreadline6-dev \
     zlib1g-dev \
-    libncurses5-dev \
-    libffi-dev \
-    libgdbm6 \
-    libgdbm-dev \
-    libdb-dev \
     apt-utils \
     jq \
     ca-certificates \
@@ -86,13 +77,6 @@ RUN curl -sL https://deb.nodesource.com/setup_lts.x | bash - && \
           sass
 
 RUN echo "#################################################"
-RUN echo "Clean up APT, Ruby, Node, and Python caches"
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    npm cache clean --force && \
-    find / -type d -name __pycache__ -prune -exec rm -rf {} \;
-
-RUN echo "#################################################"
 RUN echo "Install Go (Golang)"
 ENV GO_VERSION 1.22.1
 ENV GOROOT /usr/local/go
@@ -116,3 +100,10 @@ ENV HUGO_VERSION 0.124.0
 RUN wget https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_Linux-ARM64.tar.gz -O hugo.tar.gz && \
     tar -xzf hugo.tar.gz -C /usr/local/bin && \
     rm -rf hugo.tar.gz
+
+RUN echo "#################################################"
+RUN echo "Clean up caches"
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    npm cache clean --force && \
+    find / -type d -name __pycache__ -prune -exec rm -rf {} \;
