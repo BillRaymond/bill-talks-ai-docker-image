@@ -61,7 +61,7 @@ RUN apt-get update && \
     curl -L "https://golang.org/dl/go${GO_VERSION}.linux-$(dpkg --print-architecture).tar.gz" | tar -C /usr/local -xz
 
 RUN echo "#################################################"
-RUN echo "Install a specific version of Hugo for the current architetcure"
+RUN echo "Install a specific version of Hugo extended for the current architetcure"
 ARG HUGO_VERSION=0.124.1
 RUN ARCH=$(uname -m) && \
     case "$ARCH" in \
@@ -70,7 +70,7 @@ RUN ARCH=$(uname -m) && \
         arm*) HUGO_ARCH="arm" ;; \
         *) echo "Unsupported architecture" && exit 1 ;; \
     esac && \
-    HUGO_DOWNLOAD="https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_Linux-${HUGO_ARCH}.tar.gz" && \
+    HUGO_DOWNLOAD="https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_Linux-${HUGO_ARCH}.tar.gz" && \
     curl -Ls $HUGO_DOWNLOAD | tar -xz -C /usr/local/bin hugo
 
 RUN echo "#################################################"
